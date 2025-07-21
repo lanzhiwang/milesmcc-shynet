@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # Start Gunicorn processes
 echo Launching Shynet web server...

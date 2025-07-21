@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 if [[ ! $PERFORM_CHECKS_AND_SETUP == False ]]; then
   ./startup_checks.sh && exec ./webserver.sh

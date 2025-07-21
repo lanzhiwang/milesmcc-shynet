@@ -1,4 +1,6 @@
 #!/bin/bash
+set -x
+
 # Check if setup is necessary, do setup as needed
 echo "Performing startup checks..."
 startup_results=( $(./manage.py startup_checks) )

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # Start queue worker processes
 echo Launching Shynet queue worker...
