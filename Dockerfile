@@ -83,11 +83,11 @@ RUN addgroup --system -g $GF_GID appgroup && \
 	adduser appuser --system --uid $GF_UID -G appgroup && \
 	mkdir -p /var/local/shynet/db/ && \
 	chown -R appuser:appgroup /var/local/shynet
-[11/13] RUN
-addgroup --system -g 500 appgroup &&
-adduser appuser --system --uid 500 -G appgroup &&
-mkdir -p /var/local/shynet/db/ &&
-chown -R appuser:appgroup /var/local/shynet
+# [11/13] RUN
+# addgroup --system -g 500 appgroup &&
+# adduser appuser --system --uid 500 -G appgroup &&
+# mkdir -p /var/local/shynet/db/ &&
+# chown -R appuser:appgroup /var/local/shynet
 
 # Install Shynet
 # COPY shynet .
