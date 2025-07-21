@@ -1,7 +1,9 @@
 FROM python:alpine3.14
+# [ 1/13] FROM docker.io/library/python:alpine3.14@sha256:fb93ca595ad82020cc52ff60604cddc1a6d393229ef5ecc8f6ac7c7fb52bacda
 
 # Getting things ready
 WORKDIR /usr/src/shynet
+# [ 2/13] WORKDIR /usr/src/shynet
 
 # Install dependencies & configure machine
 ARG GF_UID="500"
@@ -11,6 +13,10 @@ RUN apk update && \
 	test "$(arch)" != "x86_64" && apk add libffi-dev rust cargo || echo "amd64 build, skipping Rust installation"
 	# libffi-dev and rust are used for the cryptography package,
 	# which we indirectly rely on. Necessary for aarch64 support.
+# [ 3/13] RUN
+# apk update &&
+# apk add --no-cache gettext bash npm postgresql-libs &&
+# test "$(arch)" != "x86_64" && apk add libffi-dev rust cargo || echo "amd64 build, skipping Rust installation"
 
 # MaxMind scans GitHub for exposed license keys and deactivates them. This
 # (encoded) license key is intened to be public; it is not configured with any
@@ -23,20 +29,36 @@ RUN apk update && \
 ARG MAXMIND_LICENSE_KEY_BASE64="Z2tySDgwX1htSEtmS3d4cDB1SnlMWTdmZ1hMMTQxNzRTQ2o5X21taw=="
 
 RUN echo $MAXMIND_LICENSE_KEY_BASE64 > .mmdb_key
+# [ 4/13] RUN echo Z2tySDgwX1htSEtmS3d4cDB1SnlMWTdmZ1hMMTQxNzRTQ2o5X21taw== > .mmdb_key
 
 # Collect GeoIP Database
 COPY assets/GeoLite2-ASN_20191224.tar.gz GeoLite2-ASN.tar.gz
+# [ 5/13] COPY assets/GeoLite2-ASN_20191224.tar.gz GeoLite2-ASN.tar.gz
+
 COPY assets/GeoLite2-City_20191224.tar.gz GeoLite2-City.tar.gz
+# [ 6/13] COPY assets/GeoLite2-City_20191224.tar.gz GeoLite2-City.tar.gz
+
 RUN apk add --no-cache curl && \
 	tar -xvz -C /tmp < GeoLite2-ASN.tar.gz && \
 	tar -xvz -C /tmp < GeoLite2-City.tar.gz && \
 	mv /tmp/GeoLite2*/*.mmdb /etc && \
 	rm GeoLite2-ASN.tar.gz GeoLite2-City.tar.gz && \
 	apk --purge del curl
+# [ 7/13] RUN
+# apk add --no-cache curl &&
+# tar -xvz -C /tmp < GeoLite2-ASN.tar.gz &&
+# tar -xvz -C /tmp < GeoLite2-City.tar.gz &&
+# mv /tmp/GeoLite2*/*.mmdb /etc &&
+# rm GeoLite2-ASN.tar.gz GeoLite2-City.tar.gz &&
+# apk --purge del curl
 
 # Move dependency files
 COPY poetry.lock pyproject.toml ./
+# [ 8/13] COPY poetry.lock pyproject.toml ./
+
 COPY package.json package-lock.json ../
+# [ 9/13] COPY package.json package-lock.json ../
+
 # Django expects node_modules to be in its parent directory.
 
 # Install more dependencies and cleanup build dependencies afterwards
@@ -47,20 +69,33 @@ RUN apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev libress
 	poetry run pip install "Cython<3.0" "pyyaml==5.4.1" "django-allauth==0.45.0" --no-build-isolation && \
 	poetry install --no-dev --no-interaction --no-ansi && \
 	apk --purge del .build-deps
+# [10/13] RUN
+# apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev libressl-dev libffi-dev &&
+# npm i -P --prefix .. &&
+# pip install poetry==1.2.2 &&
+# poetry config virtualenvs.create false &&
+# poetry run pip install "Cython<3.0" "pyyaml==5.4.1" "django-allauth==0.45.0" --no-build-isolation &&
+# poetry install --no-dev --no-interaction --no-ansi &&
+# apk --purge del .build-deps
 
 # Setup user group
 RUN addgroup --system -g $GF_GID appgroup && \
 	adduser appuser --system --uid $GF_UID -G appgroup && \
 	mkdir -p /var/local/shynet/db/ && \
 	chown -R appuser:appgroup /var/local/shynet
+[11/13] RUN
+addgroup --system -g 500 appgroup &&
+adduser appuser --system --uid 500 -G appgroup &&
+mkdir -p /var/local/shynet/db/ &&
+chown -R appuser:appgroup /var/local/shynet
 
 # Install Shynet
-COPY shynet .
-RUN python manage.py collectstatic --noinput && \
-	python manage.py compilemessages
+# COPY shynet .
+# RUN python manage.py collectstatic --noinput && \
+# 	python manage.py compilemessages
 
 # Launch
 USER appuser
-EXPOSE 8080
-HEALTHCHECK CMD bash -c 'wget -o /dev/null -O /dev/null --header "Host: ${ALLOWED_HOSTS%%,*}" "http://127.0.0.1:${PORT:-8080}/healthz/?format=json"'
-CMD [ "./entrypoint.sh" ]
+# EXPOSE 8080
+# HEALTHCHECK CMD bash -c 'wget -o /dev/null -O /dev/null --header "Host: ${ALLOWED_HOSTS%%,*}" "http://127.0.0.1:${PORT:-8080}/healthz/?format=json"'
+# CMD [ "./entrypoint.sh" ]
