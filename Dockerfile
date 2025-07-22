@@ -95,7 +95,7 @@ RUN addgroup --system -g $GF_GID appgroup && \
 # 	python manage.py compilemessages
 
 # Launch
-USER appuser
+# USER appuser
 # EXPOSE 8080
 # HEALTHCHECK CMD bash -c 'wget -o /dev/null -O /dev/null --header "Host: ${ALLOWED_HOSTS%%,*}" "http://127.0.0.1:${PORT:-8080}/healthz/?format=json"'
 # CMD [ "./entrypoint.sh" ]

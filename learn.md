@@ -67,24 +67,36 @@ docker run \
 lanzhiwang/my-shynet:sha-17fe361
 
 
-docker run -ti --rm \
+docker run -ti --rm --name shynet \
+--network host \
 -p 0.0.0.0:8080:8080 \
 --env-file=learn.env \
 -v ~/work/code/py_code/django/milesmcc-shynet/shynet:/usr/src/shynet/shynet \
 -v ~/work/code/py_code/django/milesmcc-shynet/db:/var/local/shynet/db \
-lanzhiwang/my-shynet:sha-62df449 sh
+lanzhiwang/my-shynet:sha-39156a3 sh
 
-
-python ./shynet/manage.py collectstatic
 python ./shynet/manage.py compilemessages
+python ./shynet/manage.py collectstatic
 
 python ./shynet/manage.py startup_checks
 python ./shynet/manage.py migrate
 
 python ./shynet/manage.py whitelabel "My Shynet Instance"
 python ./shynet/manage.py registeradmin hzhilamp@163.com
+Password: ycMsVY9Fpm
 
 python ./shynet/manage.py runserver 0.0.0.0:8080
+
+rm -rf db/db.sqlite3 shynet/a17t/locale/de/LC_MESSAGES/django.mo shynet/analytics/locale/de/LC_MESSAGES/django.mo shynet/compiledstatic/ shynet/core/locale/de/LC_MESSAGES/django.mo shynet/dashboard/locale/de/LC_MESSAGES/django.mo
+
+shynet
+core
+analytics
+a17t
+dashboard
+api
+
+
 
 ```
 
