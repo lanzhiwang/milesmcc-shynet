@@ -73,7 +73,7 @@ docker run -ti --rm --name shynet \
 --env-file=learn.env \
 -v ~/work/code/py_code/django/milesmcc-shynet/shynet:/usr/src/shynet/shynet \
 -v ~/work/code/py_code/django/milesmcc-shynet/db:/var/local/shynet/db \
-lanzhiwang/my-shynet:sha-39156a3 sh
+lanzhiwang/my-shynet:sha-32f70aa sh
 
 python ./shynet/manage.py compilemessages
 python ./shynet/manage.py collectstatic
